@@ -5,7 +5,7 @@ from math import hypot
 
 class EyeModel():
   def __init__(self, model_path="shape_predictor_68_face_landmarks.dat"):
-    self.detector = self.detector = dlib.get_frontal_face_detector()
+    self.detector = dlib.get_frontal_face_detector()
     self.predictor = dlib.shape_predictor(model_path)
     self.faceCascade = cv2.CascadeClassifier(
             './model/haarcascade_frontalface_default.xml')
