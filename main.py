@@ -27,15 +27,15 @@ def main(params):
         print(frame is None)
         cv2.imshow("original", frame)
         faces = video_process.detect_faces(frame)
-        emotions, CIs = detect(frame, faces, model.eye_model,
+        emotions, CIs, eye_params = detect(frame, faces, model.eye_model,
                                model.emotion_model, video_process)
         for i in CIs:
             print(i)
-        video_process.display_results(frame, faces, CIs, emotions)
+        video_process.display_results(frame, faces, CIs, emotions, eye_params)
         # if in notebook, using
         # cv2_imshow(reframe)
         cv2.imshow("video", frame)
-        if cv2.waitKey(100) & 0xFF == ord('q'):
+        if cv2.waitKey(10) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
 
@@ -80,14 +80,16 @@ def detect(frame, faces, eye_model, emotion_model, video_process):
         # Eyedetecion
         left_eye_ratio = eye_model.get_blinking_ratio(frame, [36, 37, 38, 39, 40, 41], landmarks)
         gaze_ratio_lr, gaze_ratio_ud = eye_model.get_gaze_ratio(frame, [36, 37, 38, 39, 40, 41], landmarks, gray)
-
+        eye_params = {'left_eye_ratio': left_eye_ratio,
+                      'gaze_ratio_lr':gaze_ratio_lr,
+                      'gaze_ratio_ud':gaze_ratio_ud}
         # Emotion detection
         emotion = emotion_model.detect_emotion(face, gray)
         emotions.append(emotion)
         # add text
         ci = gen_concentration_index(emotion, gaze_ratio_lr, left_eye_ratio)
         CIs.append(ci)
-    return emotions, CIs
+    return emotions, CIs , eye_params
 
 import sys
 from tools import ParamsParse

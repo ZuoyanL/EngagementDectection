@@ -27,8 +27,8 @@ class VideoProcess:
         #faces = self.faceCascade.detectMultiScale(gray, scaleFactor=1.1,minNeighbors=7,minSize=(100, 100),)
         return faces
 
-    def display_results(self, frame, faces, CIs, emotions, rules={'good':0.65,
-                                                        'normal':0.25}):
+    def display_results(self, frame, faces, CIs, emotions, eye_params, rules={'good':0.5,
+                                                        'normal':0.30}):
         """
         :param frame: 每一帧
         :param faces: 每一帧里面出现的人脸
@@ -41,14 +41,24 @@ class VideoProcess:
         for face in faces:
             x, y = face.left(), face.top()
             x1, y1 = face.right(), face.bottom()
+            concentrate = "normal"
             if CIs[i] >= rules['good']:
+                concentrate = "WONDERFUL！"
                 color = (0, 255, 0)
             elif CIs[i] >= rules['normal']:
+                concentrate = "listening"
                 color = (255, 255, 255)
             else:
-                color = (255, 0, 0)
+                concentrate = "BE PATIENT！"
+                color = (0, 0, 255)
             cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
-            cv2.putText(frame, str(emotions_table[emotions[i]]), (50, 100), font, 2, color, 3)
-            cv2.putText(frame, "CI:" + str(CIs[i]), (50, 150), font, 2, color, 3)
+            cv2.putText(frame, concentrate, (50, 200), font, 2, color, 3)
+            cv2.putText(frame, "CI:" + str(CIs[i]), (50, 250), font, 2, color, 3)
+            cv2.putText(frame, "x: " + str(eye_params['gaze_ratio_lr']),
+                        (50, 50), font, 2, (0, 0, 255), 3)
+            cv2.putText(frame, "y: " + str(eye_params['gaze_ratio_ud']),
+                        (50, 100), font, 2, (0, 0, 255), 3)
+            cv2.putText(frame, "Eye Size: " + str(eye_params['left_eye_ratio']),
+                        (50, 150), font, 2, (0, 0, 255), 3)
             i += 1
         return frame
