@@ -4,10 +4,15 @@ import torch.nn.functional as F
 import math
 import numpy as np
 import cv2
+import model.VGG as VGG
 
 class EmotionModel:
-  def __init__(self, in_channel=1, in_width=64, in_weight=64, model_path=""):
-    self.model = torch.load(model_path)
+  def __init__(self, in_channel=1, in_width=64, in_weight=64, model_path="abc"):
+    self.model = VGG.VGG('VGG19')
+    checkpoint = torch.load(model_path)
+    self.model.load_state_dict(checkpoint['net'])
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    self.model.to(device)
     self.frame_count = 0
     self.emotions = {0: 'Angry', 1: 'Fear', 2: 'Happy',
                     3: 'Sad', 4: 'Surprised', 5: 'Neutral'}

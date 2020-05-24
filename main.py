@@ -13,6 +13,7 @@ import tools
 def main(params):
     eye_model_path = params.predictor_path
     emotion_model_path = params.emotion_model_path
+    print(emotion_model_path)
     cascade_model_path = params.cascade_model_path
     result_path = params.result_path
     video_path = params.video_path

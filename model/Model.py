@@ -13,13 +13,10 @@ class Model:
     if eye_model_path is not None:
       self.load_eye_model(eye_model_path)
     if emotion_model_path is not None:
-      self.load_emotion_model(emotion_model_path)
-
+      self.load_emotion_model(model_path=emotion_model_path)
 
   def load_emotion_model(self, model_path):
-    self.emotion_model = EmotionModel.EmotionModel(model_path)
+    self.emotion_model = EmotionModel.EmotionModel(model_path=model_path)
 
   def load_eye_model(self, model_path):
     self.eye_model = EyeModel.EyeModel(model_path)
-
-
