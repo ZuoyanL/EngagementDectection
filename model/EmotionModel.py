@@ -37,6 +37,7 @@ class EmotionModel:
         self.frame_count = 0
         self.emotion = label
     self.frame_count += 1
+    return self.emotion
         
 
 

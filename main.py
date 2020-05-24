@@ -87,6 +87,6 @@ def detect(frame, faces, eye_model, emotion_model, video_process):
 import sys
 from tools import ParamsParse
 if __name__ == '__main__':
-    paser = ParamsParse.Parser()
-    params = paser.args
+    parser = ParamsParse.Parser()
+    params = parser.args
     main(params)
