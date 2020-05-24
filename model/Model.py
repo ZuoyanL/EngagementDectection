@@ -2,7 +2,6 @@ import torch
 import torch.nn as nn
 import torch.nn.functional as F
 import math
-import torchvision
 import cv2
 from model import EyeModel
 from model import EmotionModel
@@ -18,9 +17,9 @@ class Model:
 
 
   def load_emotion_model(self, model_path):
-    self.emotion_model = EmotionModel(model_path)
+    self.emotion_model = EmotionModel.EmotionModel(model_path)
 
-  def load_eye_model(self, model_path, some_params):
-    self.eye_model = EyeModel(model_path)
+  def load_eye_model(self, model_path):
+    self.eye_model = EyeModel.EyeModel(model_path)
 
 
