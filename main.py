@@ -10,20 +10,29 @@ from tools import VideoProcess
 import tools
 
 # main function.
-def main():
-    eye_model_path, emotion_model_path = "a", "b"
+def main(params):
+    eye_model_path = params.predictor_path
+    emotion_model_path = params.emotion_model_path
+    cascade_model_path = params.cascade_model_path
+    result_path = params.result_path
+    video_path = params.video_path
     model = Model.Model(eye_model_path, emotion_model_path)
-    video_process = VideoProcess.VideoProcess()
-    video_path = "test"
-    frame = None
-    faces = video_process.detect_faces(frame)
-    emotions, CIs = detect(frame, faces, model.eye_model,
-                           model.emotion_model, video_process)
-    video_process.display_results(frame, faces, CIs, emotions)
-    # if in notebook, using
-    # cv2_imshow(reframe)
-    cv2.imshow("video", frame)
-    pass
+    video_process = VideoProcess.VideoProcess(casclf_path=cascade_model_path)
+
+    cap = cv2.VideoCapture(video_path)
+
+    while(1):
+        ret, frame = cap.read()
+        faces = video_process.detect_faces(frame)
+        emotions, CIs = detect(frame, faces, model.eye_model,
+                               model.emotion_model, video_process)
+        video_process.display_results(frame, faces, CIs, emotions)
+        # if in notebook, using
+        # cv2_imshow(reframe)
+        cv2.imshow("video", frame)
+        if cv2.waitKey(100) & 0xFF == ord('q'):
+            break
+    cv2.destroyAllWindows()
 
 # calculate the CI.
 def gen_concentration_index(emotion, size, x):
@@ -74,3 +83,10 @@ def detect(frame, faces, eye_model, emotion_model, video_process):
         ci = gen_concentration_index(emotion, gaze_ratio_lr, left_eye_ratio)
         CIs.append(CIs)
     return emotions, CIs
+
+import sys
+from tools import ParamsParse
+if __name__ == '__main__':
+    paser = ParamsParse.Parser()
+    params = paser.args
+    main(params)
