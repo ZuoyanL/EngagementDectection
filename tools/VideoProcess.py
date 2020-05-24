@@ -4,20 +4,24 @@ import dlib
 from math import hypot
 
 class VideoProcess:
-    def __init__(self, casclf_path='../model/haarcascade_frontalface_default.xml'):
+    def __init__(self, casclf_path='./model/haarcascade_frontalface_default.xml'):
+        print(casclf_path)
         self.faceCascade = cv2.CascadeClassifier(casclf_path)
+        self.face_detector = dlib.get_frontal_face_detector()
+
 
     # 彩色转灰度
     def color2gray(self, frame):
-        return cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
+        print(frame.shape)
+        return cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
 
     # 把一帧图片中的所有人脸都从检测出来，并返回人脸坐标的集合，不能打乱顺序
     def detect_faces(self, frame):
-        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2BGRA)
-        faces = self.faceCascade.detectMultiScale(gray,
-            scaleFactor=1.1,
-            minNeighbors=7,
-            minSize=(100, 100),)
+        gray = cv2.cvtColor(frame, cv2.COLOR_BGR2GRAY)
+        if gray is None:
+            print('ERR! GRAY IS NONE')
+        faces = self.face_detector(gray)
+        #faces = self.faceCascade.detectMultiScale(gray, scaleFactor=1.1,minNeighbors=7,minSize=(100, 100),)
         return faces
 
     def display_results(self, frame, faces, CIs, emotions, rules={'good':0.65,
@@ -34,7 +38,6 @@ class VideoProcess:
         for face in faces:
             x, y = face.left(), face.top()
             x1, y1 = face.right(), face.bottom()
-            i += 1
             if CIs[i] >= rules['good']:
                 color = (0, 255, 0)
             elif CIs[i] >= rules['normal']:
@@ -42,5 +45,6 @@ class VideoProcess:
             else:
                 color = (255, 0, 0)
             cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
-            cv2.putText(frame, CIs[i], (50, 250), font, 2, color, 3)
+            cv2.putText(frame, "hello", (50, 250), font, 2, color, 3)
+            i += 1
         return frame

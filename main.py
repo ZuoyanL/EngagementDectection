@@ -24,9 +24,13 @@ def main(params):
 
     while(1):
         ret, frame = cap.read()
+        print(frame is None)
+        cv2.imshow("original", frame)
         faces = video_process.detect_faces(frame)
         emotions, CIs = detect(frame, faces, model.eye_model,
                                model.emotion_model, video_process)
+        for i in CIs:
+            print(i)
         video_process.display_results(frame, faces, CIs, emotions)
         # if in notebook, using
         # cv2_imshow(reframe)
@@ -38,7 +42,7 @@ def main(params):
 # calculate the CI.
 def gen_concentration_index(emotion, size, x):
     weight = 0
-    emotionweights = {0: 0.25, 1: 0.3, 2: 0.6, 3: 0.3, 4: 0.6, 5: 0.9}
+    emotionweights = {0: 0.2, 1: 0.25, 2: 0.3, 3: 0.6, 4: 0.3, 5: 0.6, 6:0.9}
     gaze_weights = 0
     if size < 0.2:
         gaze_weights = 0
@@ -64,7 +68,7 @@ def detect(frame, faces, eye_model, emotion_model, video_process):
         x, y = face.left(), face.top()
         x1, y1 = face.right(), face.bottom()
         f = gray[x:x1, y:y1]
-        cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2)
+        #cv2.rectangle(frame, (x, y), (x1, y1), (0, 255, 0), 2)
         landmarks = eye_model.predictor(gray, face)
         left_point = (landmarks.part(36).x, landmarks.part(36).y)
         right_point = (landmarks.part(39).x, landmarks.part(39).y)
@@ -78,11 +82,11 @@ def detect(frame, faces, eye_model, emotion_model, video_process):
         gaze_ratio_lr, gaze_ratio_ud = eye_model.get_gaze_ratio(frame, [36, 37, 38, 39, 40, 41], landmarks, gray)
 
         # Emotion detection
-        emotion = emotion_model.detect_emotion(face, emotion)
+        emotion = emotion_model.detect_emotion(face, gray)
         emotions.append(emotion)
         # add text
         ci = gen_concentration_index(emotion, gaze_ratio_lr, left_eye_ratio)
-        CIs.append(CIs)
+        CIs.append(ci)
     return emotions, CIs
 
 import sys
