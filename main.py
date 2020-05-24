@@ -35,7 +35,7 @@ def main(params):
         # if in notebook, using
         # cv2_imshow(reframe)
         cv2.imshow("video", frame)
-        if cv2.waitKey(10) & 0xFF == ord('q'):
+        if  cv2.waitKey(1) & 0xFF == ord('q'):
             break
     cv2.destroyAllWindows()
 
