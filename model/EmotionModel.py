@@ -9,6 +9,7 @@ import model.VGG as VGG
 import torchvision.transforms as transforms
 from PIL import Image
 
+
 class EmotionModel:
   def __init__(self, in_channel=1, in_width=48, in_weight=48, model_path="abc"):
     self.model = VGG.VGG('VGG19')

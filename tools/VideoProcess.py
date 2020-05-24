@@ -3,6 +3,9 @@ import numpy as np
 import dlib
 from math import hypot
 
+emotions_table = {0: 'Angry', 1:'Disgust', 2: 'Fear', 3: 'Happy',
+                    4: 'Sad', 5: 'Surprised', 6: 'Neutral'}
+
 class VideoProcess:
     def __init__(self, casclf_path='./model/haarcascade_frontalface_default.xml'):
         print(casclf_path)
@@ -45,6 +48,7 @@ class VideoProcess:
             else:
                 color = (255, 0, 0)
             cv2.rectangle(frame, (x, y), (x1, y1), color, 2)
-            cv2.putText(frame, "hello", (50, 250), font, 2, color, 3)
+            cv2.putText(frame, str(emotions_table[emotions[i]]), (50, 100), font, 2, color, 3)
+            cv2.putText(frame, "CI:" + str(CIs[i]), (50, 150), font, 2, color, 3)
             i += 1
         return frame
